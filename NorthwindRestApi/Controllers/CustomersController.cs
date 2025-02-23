@@ -28,21 +28,45 @@ namespace NorthwindRestApi.Controllers
         }
 
 
-        //Hakee asiakkaan id n mukaan 
+        //Hakee asiakkaan pääavaimella 
         [HttpGet("{id}")]
         // or [Route("{id}")]
         public ActionResult GetOneCustomersById(string id)
         {
-            var customer = db.Customers.Find(id);
-            if (customer != null)
+            try
             {
-                return Ok(customer);
+                var customer = db.Customers.Find(id);
+                if (customer != null)
+                {
+                    return Ok(customer);
+                }
+                else
+                {
+                    //return BadRequest("Customer for that id " + id + "not found");
+                    return NotFound($"Customer for id: {id} not found"); // String interpolation
+                }
             }
-            else
+            catch (Exception e)
             {
-                //return BadRequest("Customer for that id " + id + "not found");
-                return BadRequest($"Customer for id {id} not found"); // String interpolation
+                return BadRequest("Tapahtui virhe. Lue lisää: " + e);
             }
+        }
+
+        // Uuden lisaaminen
+        [HttpPost]
+        public ActionResult AddNew([FromBody] Customer cust)
+        {
+            try
+            {
+                db.Customers.Add(cust);
+                db.SaveChanges();
+                return Ok($"Lisataan uusi asiakas {cust.CompanyName} from {cust.City}");
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Tapahtui virhe. Lue Lisaa: " + e.InnerException);
+            }
+
         }
     }
 }
