@@ -92,5 +92,59 @@ namespace NorthwindRestApi.Controllers
                 return BadRequest(e.InnerException);
             }
         }
+
+        // Asiakkaan muokkaaminen 
+
+        [HttpPut("{id}")]
+        public ActionResult EditCustomer(string id, [FromBody] Customer customer)
+        {
+            try
+            {
+                var asiakas = db.Customers.Find(id);
+                if (asiakas != null)
+                {
+                    asiakas.CompanyName = customer.CompanyName;
+                    asiakas.ContactName = customer.ContactName;
+                    asiakas.Address = customer.Address;
+                    asiakas.City = customer.City;
+                    asiakas.Region = customer.Region;
+                    asiakas.PostalCode = customer.PostalCode;
+                    asiakas.Country = customer.Country;
+                    asiakas.Phone = customer.Phone;
+                    asiakas.Fax = customer.Fax;
+
+                    db.SaveChanges();
+                    return Ok("Muokattu asiakasta " + asiakas.CompanyName);
+                }
+                else
+                {
+                    return NotFound("Asiakasta ei loytynyt." + id);
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException);
+            }           
+        }
+
+        // Haku nimen osalla
+        [HttpGet("companyname/{cname}")]
+        public ActionResult GetByName(string cname) 
+        {
+            try
+            {
+                var cust = db.Customers.Where(c => c.CompanyName.Contains(cname));
+                
+                //var cust = from c in db.Customers where c.CompanyName.Contains(cname) select c; <-- Sama kuin ylhaalla mutta normi linq kysely
+                
+                //var cust =db,Customers.Where(c => c.CompanyName == cname); <--  nimi taytyy olla taysin oikein
+                
+                return Ok(cust);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
