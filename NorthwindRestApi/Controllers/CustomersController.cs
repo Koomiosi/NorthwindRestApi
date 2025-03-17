@@ -8,8 +8,16 @@ namespace NorthwindRestApi.Controllers
     public class CustomersController : ControllerBase
     {
         //Aluastetaan tiettokanta yhteys
-        NorthwindOriginalContext db = new NorthwindOriginalContext();
+        //NorthwindOriginalContext db = new NorthwindOriginalContext();
         // or NorthwindOriginalContext db =  new();
+
+        // Dependency Injektio
+        private NorthwindOriginalContext db;
+
+        public CustomersController(NorthwindOriginalContext dbparametri)
+        {
+            db = dbparametri;
+        }
 
 
         //Hakee kaikki asiakkaat
