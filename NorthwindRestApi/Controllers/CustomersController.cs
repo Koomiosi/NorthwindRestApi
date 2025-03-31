@@ -35,7 +35,6 @@ namespace NorthwindRestApi.Controllers
             }
         }
 
-
         //Hakee asiakkaan pääavaimella 
         [HttpGet("{id}")]
         // or [Route("{id}")]
